@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      - BRIDGE_TOKEN=${BRIDGE_TOKEN:-change-me}
+      - DASHBOARD_PASSWORD=${DASHBOARD_PASSWORD:-}
+      - TWELVEDATA_API_KEY=${TWELVEDATA_API_KEY:-}
+    volumes: ["appdata:/data"]
+    restart: unless-stopped
+volumes:
+  appdata:
