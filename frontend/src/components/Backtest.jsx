@@ -79,9 +79,9 @@ export default function Backtest({ notify }) {
             <div className="field">
               <label>Data source</label>
               <select value={source} onChange={(e) => setSource(e.target.value)}>
-                <option value="synthetic">Synthetic market data (offline)</option>
-                <option value="live">Live market data (Twelve Data API)</option>
-                <option value="cached">Uploaded CSV</option>
+                <option value="synthetic">Synthetic market data — no setup, instant</option>
+                <option value="cached">Real broker data — upload MT5 CSV (best)</option>
+                <option value="live">Real market data — Twelve Data API {liveAvailable ? '(ready)' : '(needs free key)'}</option>
               </select>
             </div>
             {source === 'synthetic' && (
@@ -91,15 +91,37 @@ export default function Backtest({ notify }) {
               </div>
             )}
             {source === 'live' && (
-              <div className="field">
-                <label>Twelve Data API key {liveAvailable && <span className="badge badge-green">server key set</span>}</label>
-                <input type="password" placeholder={liveAvailable ? 'Using server key (optional override)' : 'Paste your free API key'} value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
-              </div>
+              <>
+                {liveAvailable ? (
+                  <div className="alert alert-info">A Twelve Data key is already configured on the server — just click <b>Run backtest</b>. Fetches the latest ~5000 M5 candles (~17 trading days).</div>
+                ) : (
+                  <div className="alert alert-info" style={{ lineHeight: 1.5 }}>
+                    <b>Optional, free, 2 minutes:</b><br />
+                    1. Go to <a href="https://twelvedata.com/register" target="_blank" rel="noreferrer">twelvedata.com/register</a> (email only, no card).<br />
+                    2. After login, copy the <b>API key</b> shown on the dashboard.<br />
+                    3. Paste it below. Free plan: 800 requests/day — one backtest = one request.<br />
+                    <span style={{ color: 'var(--muted)' }}>Don't want to sign up? Use <b>Synthetic</b> (no setup) or <b>upload an MT5 CSV</b> (most accurate — it's your broker's actual prices).</span>
+                  </div>
+                )}
+                <div className="field">
+                  <label>Twelve Data API key {liveAvailable && <span className="badge badge-green">server key set</span>}</label>
+                  <input type="password" placeholder={liveAvailable ? 'Using server key (optional override)' : 'Paste your free API key here'} value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
+                </div>
+              </>
+            )}
+            {source === 'synthetic' && (
+              <div className="alert alert-info">Randomly generated gold-like prices. Good for checking the logic and UI — <b>not</b> for judging profitability.</div>
             )}
             {source === 'cached' && (
               <>
                 <input ref={fileRef} type="file" accept=".csv,.txt" style={{ display: 'none' }} onChange={(e) => upload(e.target.files[0])} />
-                <div className="upload" onClick={() => fileRef.current.click()}>Click to upload MT5 M5 export (.csv) — runs immediately</div>
+                <div className="alert alert-info" style={{ lineHeight: 1.5 }}>
+                  <b>How to export from MT5 (free, 1 minute):</b><br />
+                  1. MT5 → <b>View → Symbols</b> → search <b>XAUUSD</b> → open the <b>Bars</b> tab.<br />
+                  2. Timeframe <b>M5</b>, set a date range (e.g. last 1–2 years) → <b>Request</b>.<br />
+                  3. Click <b>Export Bars</b> → save as .csv → upload it here.
+                </div>
+                <div className="upload" onClick={() => fileRef.current.click()}>Click to upload the exported .csv — backtest runs immediately</div>
               </>
             )}
 
