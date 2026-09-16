@@ -8,7 +8,7 @@ The whole app ships as **one Docker image** (React build served by FastAPI). Dep
 3. Render generates `BRIDGE_TOKEN` and `DASHBOARD_PASSWORD` for you → copy them from *Environment* after deploy.
 4. Your URL: `https://sweep-cisd.onrender.com` (dashboard) · `/docs` (API docs).
 
-> Use the **Starter ($7/mo)** plan or the free instance sleeps after 15 min and MT5 heartbeats will fail.
+> Configured for the **Free** plan. Free instances sleep after 15 min without traffic, but the EA's 10-second heartbeat keeps it awake while MT5 is running. Free has no persistent disk, so the event log resets on restarts (positions/account are re-sent by the EA within seconds). Upgrade to Starter later if you want history kept.
 
 ## Option B — Railway
 1. https://railway.app → New Project → Deploy from GitHub repo.

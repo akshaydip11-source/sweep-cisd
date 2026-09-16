@@ -2,17 +2,15 @@ services:
   - type: web
     name: sweep-cisd
     runtime: docker
-    plan: starter          # $7/mo: always-on (free plan sleeps -> EA heartbeats fail). Change to "free" for testing.
+    plan: free
     dockerfilePath: ./Dockerfile
     healthCheckPath: /api/health
-    disk:
-      name: data
-      mountPath: /data
-      sizeGB: 1
     envVars:
       - key: BRIDGE_TOKEN
         generateValue: true
       - key: DASHBOARD_PASSWORD
         generateValue: true
+      - key: STATE_FILE
+        value: /tmp/state.json
       - key: TWELVEDATA_API_KEY
         sync: false
