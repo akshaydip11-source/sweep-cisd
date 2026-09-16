@@ -1,5 +1,7 @@
 # Sweep + CISD — XAUUSD Automation Platform
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/akshaydip11-source/sweep-cisd)
+
 End-to-end trading automation around the **H1 Liquidity Sweep + M5 CISD** MQL5 Expert Advisor.
 
 ```
