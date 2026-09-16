@@ -65,7 +65,8 @@ export default function Live({ notify }) {
 
       {!connected && (
         <div className="alert alert-warn" style={{ marginBottom: 16 }}>
-          No heartbeat from MT5 in the last 90 s. Attach <b>SweepCISD_Bridge.mq5</b> to an XAUUSD chart, allow WebRequest for this server URL, and set the same bridge token. See the <b>Setup</b> page.
+          <b>Waiting for MetaTrader 5.</b> {live?.last_heartbeat ? 'No heartbeat in the last 90 s.' : 'No terminal has connected yet — all values below stay empty until the EA sends data.'}{' '}
+          Attach <b>SweepCISD_Bridge.mq5</b> to an XAUUSD chart, allow WebRequest for <code>{location.origin}</code>, set the same <code>BridgeToken</code>. Full steps on the <b>Setup</b> page. You can use the <b>Backtester</b> meanwhile.
         </div>
       )}
       {live?.pending_command && live.pending_command !== 'none' && (
@@ -75,16 +76,16 @@ export default function Live({ notify }) {
       <div className="grid grid-4" style={{ marginBottom: 16 }}>
         <Stat label="Balance" value={fmt.money(acc.balance)} sub={acc.currency ? `${acc.currency} · ${acc.server || ''}` : '—'} />
         <Stat label="Equity" value={fmt.money(acc.equity)} sub={`Margin free ${fmt.money(acc.margin_free)}`} />
-        <Stat label="Floating P&L" value={fmt.money(sum.floating_pnl)} cls={sum.floating_pnl > 0 ? 'pos' : sum.floating_pnl < 0 ? 'neg' : ''} sub={`${sum.open_positions || 0} open position(s)`} />
-        <Stat label="Realized P&L" value={fmt.money(sum.realized_pnl)} cls={sum.realized_pnl > 0 ? 'pos' : sum.realized_pnl < 0 ? 'neg' : ''} sub={`${sum.closed_trades || 0} closed · ${fmt.pct(sum.win_rate)} win rate`} />
+        <Stat label="Floating P&L" value={connected ? fmt.money(sum.floating_pnl) : '—'} cls={sum.floating_pnl > 0 ? 'pos' : sum.floating_pnl < 0 ? 'neg' : ''} sub={`${sum.open_positions || 0} open position(s)`} />
+        <Stat label="Realized P&L" value={connected || sum.closed_trades ? fmt.money(sum.realized_pnl) : '—'} cls={sum.realized_pnl > 0 ? 'pos' : sum.realized_pnl < 0 ? 'neg' : ''} sub={`${sum.closed_trades || 0} closed · ${fmt.pct(sum.win_rate)} win rate`} />
       </div>
 
       <div className="grid grid-3" style={{ marginBottom: 16 }}>
         <div className="card">
           <div className="card-title"><h3>Market</h3><span className="badge badge-blue">{live?.symbol || '—'}</span></div>
           <div className="kv">
-            <span className="k">Bid</span><span className="v mono">{fmt.num(live?.bid)}</span>
-            <span className="k">Ask</span><span className="v mono">{fmt.num(live?.ask)}</span>
+            <span className="k">Bid</span><span className="v mono">{live?.bid ? fmt.num(live.bid) : '—'}</span>
+            <span className="k">Ask</span><span className="v mono">{live?.ask ? fmt.num(live.ask) : '—'}</span>
             <span className="k">Spread</span><span className="v mono">{live?.bid && live?.ask ? fmt.num(live.ask - live.bid) : '—'}</span>
             <span className="k">Broker time</span><span className="v">{live?.server_time || '—'}</span>
             <span className="k">Prev H1 high</span><span className="v mono">{fmt.num(st.prev_h1_high)}</span>

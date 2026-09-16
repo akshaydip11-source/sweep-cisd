@@ -154,6 +154,10 @@ def _save():
 
 
 _load()
+# a pending command or pause flag from a previous run must not surprise a freshly connected EA
+if not live.get("last_heartbeat"):
+    live["command"] = "none"
+    live["paused"] = False
 
 
 async def broadcast(msg: Dict[str, Any]):
